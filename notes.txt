@@ -1,0 +1,11 @@
+Connect initial components
+
+Build 
+    Header
+    Nav
+    Main
+    AllHeroes
+    HeroSingle
+    Error
+    AddHeroForm
+    Footer
