@@ -9,3 +9,5 @@ Build
     Error
     AddHeroForm
     Footer
+
+    See if i can make a dynamic components for Franchise,team, species, and power as well as their single spaces
