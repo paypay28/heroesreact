@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router'
+import axios from 'axios'
 
 
 import Header from "./components/Header"
@@ -21,23 +22,58 @@ const App =()=> {
         franchise_id: 0,
         species_id: 0,
         place_of_origin: '',
-        first_app: '',
+        first_app: 1960,
         alignment: '',
-        imgUrl: ''
+        img_url: ''
     })
 
-    const handleClick =(e)=> {
-        e.preventDefault()
-        console.log('clicked')
+    const [ isPostSuccess, setIsPostSuccess] = useState({
+        isSuccess: false,
+        id: 0
+    })
+
+    const resetData=()=> {
+        setIsPostSuccess({
+            isSuccess: false,
+            id: 0
+        })
+
+        setFormData({
+            hero_name: '',
+            first_name: '',
+            last_name: '',
+            alias: '',
+            franchise_id: 0,
+            species_id: 0,
+            place_of_origin: '',
+            first_app: 1960,
+            alignment: '',
+            img_url: ''
+        })
     }
 
+    const handleSubmit =(e)=> {
+        e.preventDefault()
+
+        axios({
+            method: 'post',
+            url: 'http://localhost:3004/api/hero/post',
+            data: formData
+        }).then(response => {
+            // console.log(response)
+            setIsPostSuccess({isSuccess: true, id: response.data.Last_id})
+        })
+    }
+
+    // console.log(isPostSuccess)
+
     const handleChange =(event)=> {
-        const { name, value, type, selected } = event.target
+        const { name, value } = event.target
 
         setFormData(prevState => {
             return {
                 ...prevState,
-                [name]: type === "radio" ? selected : value
+                [name]: value
             }
         })
     }
@@ -49,27 +85,29 @@ const App =()=> {
                 <Route path="/" element={ <Main />} />
 
                 <Route path="/franchise" element={ <AllData table="franchise" name="franchise"/>} />
-                <Route path="/franchise/:endpoint" element={ <AllHeroes table="franchise" />} />
+                <Route path="/franchise/:endpoint" element={ <AllHeroes table="franchise" resetData={resetData} />} />
 
-                <Route path="/hero" element={ <AllHeroes table='hero' />}/>
+                <Route path="/hero" element={ <AllHeroes table='hero' resetData={resetData} />}/>
                 <Route path="/hero/:id" element={ <HeroSingle />} />
                 <Route 
                     path="/heroForm" 
                     element={ <HeroForm 
-                        handleClick={ handleClick } 
+                        handleSubmit={ handleSubmit } 
                         handleChange={handleChange} 
                         formData={formData}  
+                        isPostSuccess={isPostSuccess}
                     />} 
                 />
 
+                { isPostSuccess.isSuccess && <Route path={`/hero/${isPostSuccess.id}`} element={ <HeroSingle />} />}
                 <Route path='/power' element={ <AllData table="power" name="power"/>} />
-                <Route path='/power/:endpoint' element={ <AllHeroes table="power" />} />
+                <Route path='/power/:endpoint' element={ <AllHeroes table="power" resetData={resetData}/>} />
 
                 <Route path='/species' element={ <AllData table="species" name="species"/>} />
-                <Route path='/species/:endpoint' element={ <AllHeroes table="species" />} />
+                <Route path='/species/:endpoint' element={ <AllHeroes table="species" resetData={resetData}/>} />
 
                 <Route path='/team' element={ <AllData table="team" name="team"/>} />
-                <Route path='/team/:endpoint' element={ <AllHeroes table="team" />} />
+                <Route path='/team/:endpoint' element={ <AllHeroes table="team" resetData={resetData}/>} />
                 
                 <Route path="*" element={ <Error />} />
             </Routes>

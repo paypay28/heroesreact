@@ -1,20 +1,43 @@
-import { useState, useEffect} from 'react'
-import { Link } from "react-router"
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
-const AllDataCard =(props)=> {
+import AllDataCard from './AllDataCard'
+
+const AllData =( {table, name} )=> {
+
+    const [ dataArr, setDataArr ] = useState([])
+
+
+    useEffect(()=> {
+
+        const url = `http://localhost:3000/api/${table}`
+
+        axios.get(url).then(res => setDataArr(res.data))
+    }, [table])
+
+    const allDataCardComponents = dataArr.map(item => {
+        
+        return (
+            <AllDataCard 
+                key={item.franchise_id || item.power_id || item.species_id || item.team_id} 
+                table={table} 
+                data={item} 
+                name={item.franchise || item.power || item.species || item.team}
+            />  
+        )
+    })
+
 
     return (
-        <div className="col">
-            <div className="figure h-100 franchise-figure">
-                <img src="https://placehold.co/50x50" alt={`logo for ${props.category}`} className="img-fluid image figure-img franchise-img" />
-                <figcaption className="figure-caption fran-fig-cap">
-                    <Link to={`/${props.table}/${props.name}`}>
-                        { props.name } 
-                    </Link>
-                </figcaption>
+        <main className="main" id="franchiseMain">
+            <div className="container">
+                <h2 className="franchise-heading">All {name }</h2>
+                <div className="row row-cols-1 row-cols-md-3">
+                    { allDataCardComponents }
+                </div>
             </div>
-        </div>
+        </main>
     )
 }
 
-export default AllDataCard
+export default AllData

@@ -11,7 +11,7 @@ const HeroSingle =()=> {
     const params = useParams()
 
     useEffect(()=> {
-        const url = `http://localhost:3002/api/hero/${params.id}`
+        const url = `http://localhost:3004/api/hero/${params.id}`
 
         axios.get(url).then(res => {
             setHero(res.data)

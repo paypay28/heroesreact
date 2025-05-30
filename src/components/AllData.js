@@ -10,7 +10,7 @@ const AllData =( {table, name} )=> {
 
     useEffect(()=> {
 
-        const url = `http://localhost:3002/api/${table}`
+        const url = `http://localhost:3004/api/${table}`
 
         axios.get(url).then(res => setDataArr(res.data))
     }, [table])
